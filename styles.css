@@ -1,0 +1,603 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #2d6a2e;
+  color: #1a2e1a;
+  min-height: 100vh;
+  line-height: 1.5;
+  padding: max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+}
+
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #f5f5f5;
+  margin-bottom: 1rem;
+}
+
+.header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.level-indicator {
+  font-size: 1rem;
+}
+
+.level-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.level-dots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.level-dot {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid #f5f5f5;
+  background-color: #3d8b3d;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.level-dot.active {
+  background-color: #e8b923;
+  color: #1a2e1a;
+}
+
+.level-dot.done {
+  background-color: #f9a825;
+  color: #1a2e1a;
+}
+
+.level-dot.locked,
+.level-dot:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background-color: #555;
+  border-color: #999;
+  pointer-events: none;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.panel {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.instructions-panel h2,
+.controls-panel h2 {
+  font-size: 1rem;
+  color: #2d6a2e;
+  margin-bottom: 0.5rem;
+}
+
+.instruction {
+  margin-bottom: 0.5rem;
+}
+
+.attempts {
+  font-size: 0.9rem;
+  color: #4a5f4a;
+}
+
+.pitch-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+}
+
+.pitch-wrapper {
+  position: relative;
+  width: 480px;
+  height: 320px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.pitch {
+  width: 480px;
+  height: 320px;
+  background-color: #3d8b3d;
+  border: 4px solid #1a4d1a;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pitch-field {
+  position: absolute;
+  top: 16px;
+  left: 12px;
+  width: 456px;
+  height: 288px;
+  display: flex;
+  overflow: hidden;
+}
+
+.pitch-field-crowded {
+  row-gap: 8px;
+  column-gap: 6px;
+}
+
+.pitch.success-flash {
+  box-shadow: 0 0 0 4px #e8b923;
+}
+
+.pitch.error-shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.goal {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 26px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.goal-top {
+  top: 10px;
+}
+
+.goal-bottom {
+  bottom: 10px;
+}
+
+.goal-post {
+  position: absolute;
+  width: 4px;
+  height: 100%;
+  background-color: #f5f5f5;
+}
+
+.goal-top .goal-post {
+  top: 0;
+}
+
+.goal-bottom .goal-post {
+  bottom: 0;
+}
+
+.goal-post-left {
+  left: 0;
+}
+
+.goal-post-right {
+  right: 0;
+}
+
+.goal-crossbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #f5f5f5;
+}
+
+.goal-top .goal-crossbar {
+  top: 0;
+}
+
+.goal-bottom .goal-crossbar {
+  bottom: 0;
+}
+
+.goal-net {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.goal-top .goal-net {
+  top: 4px;
+  bottom: 0;
+}
+
+.goal-bottom .goal-net {
+  top: 0;
+  bottom: 4px;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.player-red {
+  background-color: #c62828;
+}
+
+.player-blue {
+  background-color: #1565c0;
+}
+
+.player-gold {
+  background-color: #f9a825;
+  color: #333;
+}
+
+
+.ball {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.controls-hint {
+  font-size: 0.9rem;
+  color: #4a5f4a;
+  margin-bottom: 1rem;
+}
+
+.control-group {
+  margin-bottom: 0.8rem;
+}
+
+.control-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 0.35rem;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.prop-btn {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background-color: #f0f4f0;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.prop-btn.active {
+  background-color: #2d6a2e;
+  color: #fff;
+  border-color: #2d6a2e;
+}
+
+.actions-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-nav {
+  background-color: #3d8b3d;
+  color: #fff;
+}
+
+.btn-primary {
+  background-color: #2d6a2e;
+  color: #fff;
+}
+
+.btn-secondary {
+  background-color: #e0e8e0;
+  color: #1a2e1a;
+}
+
+.btn-success {
+  background-color: #e8b923;
+  color: #1a2e1a;
+}
+
+.btn-hint {
+  background-color: #fff3e0;
+  color: #e65100;
+  border: 2px solid #ffcc80;
+}
+
+.feedback {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.feedback:empty {
+  display: none;
+}
+
+.feedback.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.feedback.error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.feedback.reveal {
+  background-color: #fff8e1;
+  color: #e65100;
+}
+
+.solution-panel {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 4px solid #e8b923;
+}
+
+.solution-panel h3 {
+  font-size: 1rem;
+  color: #2d6a2e;
+  margin-bottom: 0.5rem;
+}
+
+.solution-list {
+  list-style: none;
+}
+
+.solution-list li {
+  padding: 0.2rem 0;
+}
+
+.solution-list code {
+  background-color: #f0f4f0;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  color: #f5f5f5;
+  font-size: 0.85rem;
+}
+
+.celebration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.celebration[hidden] {
+  display: none;
+}
+
+.celebration-stage {
+  position: relative;
+  width: 100%;
+  height: 75%;
+}
+
+.celebration-cheer {
+  color: #e8b923;
+  font-weight: bold;
+}
+
+.legend {
+  position: absolute;
+  bottom: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48px;
+}
+
+.legend-head {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #d4a574;
+  margin-bottom: 2px;
+}
+
+.legend-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.legend-number {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.legend-legs {
+  display: flex;
+  justify-content: space-between;
+  width: 28px;
+  height: 14px;
+  margin-top: 2px;
+}
+
+.legend-legs::before,
+.legend-legs::after {
+  content: "";
+  width: 10px;
+  height: 14px;
+  background-color: #1a1a2e;
+}
+
+.legend-name {
+  margin-top: 4px;
+  font-size: 0.6rem;
+  color: #fff;
+}
+
+.legend-messi .legend-body {
+  background: linear-gradient(90deg, #75aadb 33%, #fff 33%, #fff 66%, #75aadb 66%);
+}
+
+.legend-messi .legend-number {
+  color: #1a237e;
+  text-shadow: none;
+}
+
+.legend-ronaldo .legend-body {
+  background-color: #c62828;
+}
+
+.legend-messi {
+  left: -60px;
+  animation: messi-run 1.8s ease forwards, messi-jump 0.5s ease 1.8s infinite alternate;
+}
+
+.legend-ronaldo {
+  right: -60px;
+  animation: ronaldo-run 1.8s ease forwards, ronaldo-jump 0.5s ease 1.8s infinite alternate;
+}
+
+.celebration-ball {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  font-size: 1.5rem;
+  transform: translateX(-50%) scale(0);
+  animation: ball-pop 0.4s ease 1.6s forwards, ball-bounce 0.45s ease 2s infinite;
+}
+
+@keyframes messi-run {
+  0% { left: -60px; }
+  100% { left: 38%; }
+}
+
+@keyframes ronaldo-run {
+  0% { right: -60px; }
+  100% { right: 38%; }
+}
+
+@keyframes messi-jump {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+@keyframes ronaldo-jump {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
+}
+
+@keyframes ball-pop {
+  to { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes ball-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-14px); }
+}
+
+@media (min-width: 768px) {
+  .main {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .instructions-panel,
+  .pitch-panel,
+  #feedback,
+  #solution-panel {
+    flex: 1 1 100%;
+  }
+
+  .controls-panel {
+    flex: 1 1 60%;
+  }
+
+  .actions-panel {
+    flex: 1 1 35%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 520px) {
+  .pitch-panel {
+    overflow-x: auto;
+  }
+}
