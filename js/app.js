@@ -32,12 +32,14 @@ let attempts = 0;
 let solved = false;
 let revealed = false;
 let completedLevels = [];
+let maxReachedLevel = 0;
 let flexValues = { ...DEFAULT_VALUES };
 let celebrationTimer = null;
 
 const CELEBRATION_TIME = 3200;
 const STORAGE_LEVEL_KEY = "flexPitch-level";
 const STORAGE_DONE_KEY = "flexPitch-done";
+const STORAGE_MAX_KEY = "flexPitch-max";
 const STORAGE_VERSION_KEY = "flexPitch-version";
 const PROGRESS_VERSION = "2";
 
@@ -47,6 +49,7 @@ const propertyToCss = (name) =>
 const saveProgress = () => {
   localStorage.setItem(STORAGE_LEVEL_KEY, String(currentLevel));
   localStorage.setItem(STORAGE_DONE_KEY, completedLevels.join(","));
+  localStorage.setItem(STORAGE_MAX_KEY, String(maxReachedLevel));
 };
 
 const loadProgress = () => {
@@ -56,7 +59,9 @@ const loadProgress = () => {
     localStorage.setItem(STORAGE_VERSION_KEY, PROGRESS_VERSION);
     localStorage.removeItem(STORAGE_LEVEL_KEY);
     localStorage.removeItem(STORAGE_DONE_KEY);
+    localStorage.removeItem(STORAGE_MAX_KEY);
     completedLevels = [];
+    maxReachedLevel = 0;
     currentLevel = 0;
     return;
   }
@@ -80,6 +85,13 @@ const loadProgress = () => {
   if (currentLevel > getFrontierLevel()) {
     currentLevel = getFrontierLevel();
   }
+
+  const savedMax = Number(localStorage.getItem(STORAGE_MAX_KEY));
+  if (!Number.isNaN(savedMax) && savedMax >= 0 && savedMax < LEVELS.length) {
+    maxReachedLevel = savedMax;
+  }
+
+  maxReachedLevel = Math.max(maxReachedLevel, currentLevel, getFrontierLevel());
 };
 
 const sanitizeCompletedLevels = () => {
@@ -121,11 +133,15 @@ const canGoToLevel = (index) => {
     return false;
   }
 
-  if (index < currentLevel) {
+  if (index <= currentLevel) {
     return true;
   }
 
-  if (index === currentLevel) {
+  if (index <= maxReachedLevel) {
+    return true;
+  }
+
+  if (hasBeatenLevel(index)) {
     return true;
   }
 
@@ -139,7 +155,7 @@ const canGoToLevel = (index) => {
 const canAdvanceToNextLevel = () => canGoToLevel(currentLevel + 1);
 
 const blockedLevelMessage = (index) => {
-  if (index > currentLevel + 1) {
+  if (index > currentLevel + 1 && index > maxReachedLevel && !hasBeatenLevel(index)) {
     return "Stages unlock one at a time. Beat the next stage in line first.";
   }
 
@@ -363,6 +379,7 @@ const loadLevel = (index, { replay = false } = {}) => {
   const level = LEVELS[index];
   const reviewing = !replay && hasBeatenLevel(index);
   currentLevel = index;
+  maxReachedLevel = Math.max(maxReachedLevel, index);
   resetLevelState(level);
 
   if (reviewing) {

@@ -145,8 +145,9 @@ export const LEVELS = [
   },
   {
     instruction:
-      "Four red midfielders jog back in reverse shirt order along the bottom edge. " +
-      "Keep them on the bottom line with the same amount of space around every player.",
+      "Four red midfielders must stand in one horizontal row along the bottom edge of the pitch. " +
+      "Show them in reverse shirt order - #11 on the left, then #10, #8, and #7 on the right. " +
+      "Give every player the same amount of free space around them.",
     items: [
       { type: "player", team: "red", label: "7" },
       { type: "player", team: "red", label: "8" },
@@ -168,8 +169,8 @@ export const LEVELS = [
   },
   {
     instruction:
-      "Three blue players lead a high press across the top of the pitch in one row. " +
-      "Anchor the first player on the far-left corner and the last player on the far-right corner.",
+      "Three blue players must form one horizontal row across the top of the pitch, close to the top goal. " +
+      "Put #4 on the far-left corner, #6 on the far-right corner, and #5 in the middle between them.",
     items: [
       { type: "player", team: "blue", label: "4" },
       { type: "player", team: "blue", label: "5" },
